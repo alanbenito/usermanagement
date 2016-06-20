@@ -1,11 +1,11 @@
 package controllers
 
 import (
-	"fmt"
-	"strconv"
 	"bytes"
-	"net/http"
 	"encoding/json"
+	"fmt"
+	"net/http"
+	"strconv"
 	user "usermanagement/models"
 )
 
@@ -26,13 +26,13 @@ func UserListHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func UserDetailHandler(w http.ResponseWriter, r *http.Request) {
-	var response user.JSONResponse 
-    userID, err := strconv.Atoi(r.URL.Query().Get("user_id"))
+	var response user.JSONResponse
+	userID, err := strconv.Atoi(r.URL.Query().Get("user_id"))
 
-    if err != nil {
-    	response.Meta.Error = 1
-    	response.Meta.Status = err.Error()
-    }
+	if err != nil {
+		response.Meta.Error = 1
+		response.Meta.Status = err.Error()
+	}
 
 	u := user.GetUser(userID)
 
@@ -43,7 +43,7 @@ func UserDetailHandler(w http.ResponseWriter, r *http.Request) {
 	response.Data = u
 
 	jsonResponse, err := json.Marshal(response)
-	fmt.Fprintf(w, bytes.NewBuffer(jsonResponse).String())	
+	fmt.Fprintf(w, bytes.NewBuffer(jsonResponse).String())
 }
 
 func UserCreateHandler(w http.ResponseWriter, r *http.Request) {
@@ -51,22 +51,22 @@ func UserCreateHandler(w http.ResponseWriter, r *http.Request) {
 		var response user.JSONResponse
 		var u user.User
 
-		r.ParseForm()
+		//r.ParseForm()
 
 		u.Username = r.FormValue("username")
 		u.Password = r.FormValue("password")
 
 		err := user.CreateUser(u)
 		if err != nil {
-	    	response.Meta.Error = 1
-	    	response.Meta.Status = err.Error()			
+			response.Meta.Error = 1
+			response.Meta.Status = err.Error()
 		} else {
 			response.Meta.Status = "success"
 			response.Data = u
 		}
 
 		jsonResponse, err := json.Marshal(response)
-		fmt.Fprintf(w, bytes.NewBuffer(jsonResponse).String())			
+		fmt.Fprintf(w, bytes.NewBuffer(jsonResponse).String())
 	}
 }
 
@@ -82,37 +82,37 @@ func UserUpdateHandler(w http.ResponseWriter, r *http.Request) {
 
 		err := user.UpdateUser(u)
 		if err != nil {
-	    	response.Meta.Error = 1
-	    	response.Meta.Status = err.Error()			
+			response.Meta.Error = 1
+			response.Meta.Status = err.Error()
 		} else {
 			response.Meta.Status = "success"
 			response.Data = u
 		}
 
 		jsonResponse, err := json.Marshal(response)
-		fmt.Fprintf(w, bytes.NewBuffer(jsonResponse).String())			
+		fmt.Fprintf(w, bytes.NewBuffer(jsonResponse).String())
 	}
 }
 
 func UserDeleteHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "DELETE" {
-		var response user.JSONResponse 
-	    userID, err := strconv.Atoi(r.URL.Query().Get("user_id"))
+		var response user.JSONResponse
+		userID, err := strconv.Atoi(r.URL.Query().Get("user_id"))
 
-	    if err != nil {
-	    	response.Meta.Error = 1
-	    	response.Meta.Status = err.Error()
-	    }
+		if err != nil {
+			response.Meta.Error = 1
+			response.Meta.Status = err.Error()
+		}
 
 		err = user.DeleteUser(userID)
 		if err != nil {
-	    	response.Meta.Error = 1
-	    	response.Meta.Status = err.Error()			
+			response.Meta.Error = 1
+			response.Meta.Status = err.Error()
 		} else {
 			response.Meta.Status = "success"
 		}
 
 		jsonResponse, err := json.Marshal(response)
-		fmt.Fprintf(w, bytes.NewBuffer(jsonResponse).String())			
+		fmt.Fprintf(w, bytes.NewBuffer(jsonResponse).String())
 	}
 }
