@@ -1,6 +1,9 @@
 package user
 
 import (
+	"log"
+	"database/sql"
+	s "strings"
 )
 
 type User struct {
@@ -33,9 +36,31 @@ func GetUser(id int) User {
 }
 
 func CreateUser(user User) error {
-	var err error
-
-	// query update user by user id, return error (if any)
+	var db  *sql.DB
+	tx, err := db.Begin()
+	if err != nil{
+		log.Println("error koneksi ",err.Error())
+		return err
+	}else{
+		defer tx.Rollback()
+		query, err := tx.Prepare(s.Join([]string{"INSERT INTO tbl_user ",
+		"(username, password) VALUES(?, ?) "}, " "))
+		
+		if err != nil{
+			log.Println("error query ",err.Error())
+			return err
+		}else{
+			_, err2 := query.Exec(user.Username, user.Password)
+			if err2 != nil{
+				log.Println("error param ", err2.Error())
+				return err2
+			}else{
+				err2 = tx.Commit()
+			}
+		}
+		query.Close()	
+	}
+	
 
 	return err
 }
