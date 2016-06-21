@@ -74,13 +74,18 @@ func UserUpdateHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "PUT" {
 		var response user.JSONResponse
 		var u user.User
+		userID, errs := strconv.Atoi(r.URL.Query().Get("user_id"))
+		if errs != nil {
+			response.Meta.Error = 1
+			response.Meta.Status = errs.Error()
+		}
 
-		r.ParseForm()
+		//r.ParseForm()
 
 		u.Username = r.FormValue("username")
 		u.Password = r.FormValue("password")
 
-		err := user.UpdateUser(u)
+		err := user.UpdateUser(u, userID)
 		if err != nil {
 			response.Meta.Error = 1
 			response.Meta.Status = err.Error()
